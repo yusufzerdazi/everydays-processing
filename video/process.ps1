@@ -1,5 +1,4 @@
-param([bool] $rename = 0,
-      [string] $prefix,
+param([string] $prefix,
       [string] $path = ".",
       [string] $output = ".\output")
 
@@ -7,10 +6,10 @@ param([bool] $rename = 0,
 $files = Get-ChildItem $path | Where-Object {$_.extension -like ".mp4"}
 
 # Rename with prefix.
-If($rename -and $prefix){
-    $x = 0
+If($prefix){
+    $x = 1
     ForEach ($file in $files) {
-        Rename-Item -Path $file.Name -NewName ($prefix + $x.ToString("D2") + ".mp4")
+        Rename-Item -Path $file.FullName -NewName ($prefix + $x.ToString("D2") + ".mp4")
         $x++
     }
     $files = Get-ChildItem $path | Where-Object {$_.extension -like ".mp4"}
@@ -21,7 +20,7 @@ New-Item -ItemType directory -Path $output
 ForEach ($file in $files)
 {
     New-Item -ItemType directory -Path "$($output)\$($file.basename)"
-    & ".\ffmpeg.exe" -i $file -c copy -f segment -segment_time 60 -r 30 -reset_timestamps 1 "$($output)\$($file.basename)\$($file.basename)_%03d$($file.extension)"
+    & ".\ffmpeg.exe" -i $file.FullName -c copy -f segment -segment_time 60 -r 30 -reset_timestamps 1 "$($output)\$($file.basename)\$($file.basename)_%03d$($file.extension)"
 } 
 
 # Move into subfolders for ease of instagram posting.
