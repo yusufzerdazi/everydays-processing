@@ -3,7 +3,7 @@ param([string] $prefix,
       [string] $output = ".\output")
 
 # Get video files.
-$files = Get-ChildItem $path | Where-Object {$_.extension -like ".mp4"}
+$files = Get-ChildItem $path | Where-Object {$_.extension -like ".mp4"} | Sort-Object LastWriteTime
 
 # Rename with prefix.
 If($prefix){
